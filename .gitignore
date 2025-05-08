@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtuelle Umgebung
+.venv/
+
+# Editor-/System-Dateien
+.DS_Store
+.vscode/
+
+# Datenbank oder andere Laufzeitdaten
+instance/db
+
+# GitHub workflow logs (optional)
+*.log

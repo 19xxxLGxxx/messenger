@@ -9,7 +9,7 @@
   <div class="container mt-5">
     <h2 class="mb-4">Willkommen, {{ username }}</h2>
 
-    <form action="{{ url_for('start_chat') }}" method="POST">
+    <form action="{{ url_for('main.start_chat') }}" method="POST">
       <input type="text" name="recipient" placeholder="Name des Chatpartners" required>
       <button type="submit">Chat starten</button>
     </form>
@@ -18,7 +18,7 @@
 
     <div class="d-flex flex-column gap-3 mt-4">
       {% for contact in contacts %}
-        <a href="{{ url_for('chat', recipient=contact) }}" class="btn btn-primary m-2 text-start" style="width: fit-content;">
+        <a href="{{ url_for('main.chat', recipient=contact) }}" class="btn btn-primary m-2 text-start" style="width: fit-content;">
           {{ contact }}
         </a>
       {% else %}
