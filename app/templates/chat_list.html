@@ -6,15 +6,24 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container mt-5">
-    <h2 class="mb-4">Willkommen, {{ username }}</h2>
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Willkommen, {{ username }}</a>
+    </div>
+  </nav>
 
-    <form action="{{ url_for('main.start_chat') }}" method="POST">
+  <form class="mt-3 bg-light p-3" action="{{ url_for('main.start_chat') }}" method="POST">
+    <div class="input-group">
       <input type="text" name="recipient" placeholder="Name des Chatpartners" required>
-      <button type="submit">Chat starten</button>
-    </form>
+      <button class="btn btn-primary" type="submit">Chat starten</button>
+    </div>
+  </form>
 
-    <h4>Deine Chats:</h4>
+    <nav class="mt-3 navbar bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Deine Chats:</a>
+      </div>
+    </nav>
 
     <div class="d-flex flex-column gap-3 mt-4">
       {% for user in contacts %}
