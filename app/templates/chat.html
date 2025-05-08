@@ -22,12 +22,12 @@
 
   <div class="container mt-3">
     {% for msg in messages %}
-      {% if msg.sender == sender %}
+      {% if msg.sender.username == sender %}
 
         <div class="d-flex justify-content-end mb-3">
           <div class="card bg-light chat-message">
             <div class="card-body">
-              <b>{{ msg.sender }}:</b><br> {{ msg.content }}
+              <b>{{ msg.sender.username }}:</b><br> {{ msg.content }}
             </div>
           </div>
         </div>
@@ -36,7 +36,7 @@
         <div class="d-flex justify-content-start mb-3">
           <div class="card bg-dark text-white chat-message">
             <div class="card-body">
-              <b>{{ msg.sender }}:</b><br> {{ msg.content }}
+              <b>{{ msg.sender.username }}:</b><br> {{ msg.content }}
             </div>
           </div>
         </div>

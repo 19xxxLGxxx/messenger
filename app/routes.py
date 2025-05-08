@@ -1,57 +1,75 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from . import db
-from .models import Message
+from .models import User, Message
 
 bp = Blueprint("main", __name__)
 
 @bp.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        session['username'] = request.form['username']
-        return redirect(url_for('main.chat_list'))
+        username = request.form["username"]
+        session["username"] = username
+
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            user = User(username=username)
+            db.session.add(user)
+            db.session.commit()
+
+        return redirect(url_for("main.chat_list"))
     return render_template("login.html")
 
 @bp.route("/chats")
 def chat_list():
-    if 'username' not in session:
-        return redirect(url_for('main.login'))
+    if "username" not in session:
+        return redirect(url_for("main.login"))
 
-    username = session['username']
-    sent = db.session.query(Message.recipient).filter_by(sender=username)
-    received = db.session.query(Message.sender).filter_by(recipient=username)
+    current_user = User.query.filter_by(username=session["username"]).first()
 
-    contacts = set()
-    for s in sent:
-        contacts.add(s.recipient)
-    for r in received:
-        contacts.add(r.sender)
+    # Alle eindeutigen Kontakte aus gesendeten und empfangenen Nachrichten
+    sent_ids = db.session.query(Message.recipient_id).filter_by(sender_id=current_user.id).distinct()
+    received_ids = db.session.query(Message.sender_id).filter_by(recipient_id=current_user.id).distinct()
 
-    return render_template("chat_list.html", contacts=contacts, username=username)
+    contact_ids = {user_id for (user_id,) in sent_ids.union(received_ids).all()}
+    contacts = User.query.filter(User.id.in_(contact_ids)).all()
 
-@bp.route("/chat/<recipient>", methods=["GET", "POST"])
-def chat(recipient):
-    if 'username' not in session:
-        return redirect(url_for('main.login'))
+    return render_template("chat_list.html", contacts=contacts, username=current_user.username)
 
-    sender = session['username']
+@bp.route("/chat/<recipient_username>", methods=["GET", "POST"])
+def chat(recipient_username):
+    if "username" not in session:
+        return redirect(url_for("main.login"))
 
-    if request.method == 'POST':
-        content = request.form['content']
-        new_message = Message(sender=sender, recipient=recipient, content=content)
+    sender = User.query.filter_by(username=session["username"]).first()
+    recipient = User.query.filter_by(username=recipient_username).first()
+
+    if not recipient:
+        return "Empfänger nicht gefunden", 404
+
+    if request.method == "POST":
+        content = request.form["content"]
+        new_message = Message(sender_id=sender.id, recipient_id=recipient.id, content=content)
         db.session.add(new_message)
         db.session.commit()
-        return redirect(url_for('main.chat', recipient=recipient))
+        return redirect(url_for("main.chat", recipient_username=recipient_username))
 
     messages = Message.query.filter(
-        ((Message.sender == sender) & (Message.recipient == recipient)) |
-        ((Message.sender == recipient) & (Message.recipient == sender))
+        ((Message.sender_id == sender.id) & (Message.recipient_id == recipient.id)) |
+        ((Message.sender_id == recipient.id) & (Message.recipient_id == sender.id))
     ).order_by(Message.created_at).all()
 
-    return render_template("chat.html", messages=messages, sender=sender, recipient=recipient)
+    return render_template("chat.html", messages=messages, sender=sender.username, recipient=recipient.username)
 
 @bp.route("/start_chat", methods=["POST"])
 def start_chat():
-    recipient = request.form['recipient']
-    if not recipient:
+    recipient_username = request.form["recipient"]
+    if not recipient_username:
         return "Name is required!", 400
-    return redirect(url_for('main.chat', recipient=recipient))
+
+    recipient = User.query.filter_by(username=recipient_username).first()
+    if not recipient:
+        recipient = User(username=recipient_username)
+        db.session.add(recipient)
+        db.session.commit()
+
+    return redirect(url_for("main.chat", recipient_username=recipient_username))

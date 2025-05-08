@@ -17,9 +17,9 @@
     <h4>Deine Chats:</h4>
 
     <div class="d-flex flex-column gap-3 mt-4">
-      {% for contact in contacts %}
-        <a href="{{ url_for('main.chat', recipient=contact) }}" class="btn btn-primary m-2 text-start" style="width: fit-content;">
-          {{ contact }}
+      {% for user in contacts %}
+        <a href="{{ url_for('main.chat', recipient_username=user.username) }}" class="btn btn-primary m-2 text-start" style="width: fit-content;">
+          {{ user.username }}
         </a>
       {% else %}
         <div class="alert alert-info" role="alert">
