@@ -72,3 +72,18 @@ def start_chat():
         db.session.commit()
 
     return redirect(url_for("main.chat", recipient_username=recipient_username))
+
+@bp.route("/chat_data/<recipient_username>")
+def chat_data(recipient_username):
+    if "username" not in session:
+        return "", 401
+
+    sender = User.query.filter_by(username=session["username"]).first()
+    recipient = User.query.filter_by(username=recipient_username).first()
+
+    messages = Message.query.filter(
+        ((Message.sender_id == sender.id) & (Message.recipient_id == recipient.id)) |
+        ((Message.sender_id == recipient.id) & (Message.recipient_id == sender.id))
+    ).order_by(Message.created_at).all()
+
+    return render_template("chat_messages.html", messages=messages, sender=sender.username)

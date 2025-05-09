@@ -1,0 +1,10 @@
+{% for msg in messages %}
+  <div class="d-flex justify-content-{{ 'end' if msg.sender.username == sender else 'start' }} mb-3">
+    <div class="card {{ 'bg-light' if msg.sender.username == sender else 'bg-dark text-white' }} chat-message">
+      <div class="card-body">
+        <b>{{ msg.sender.username }}:</b><br>
+        {{ msg.content }}
+      </div>
+    </div>
+  </div>
+{% endfor %}

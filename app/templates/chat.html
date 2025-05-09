@@ -20,7 +20,7 @@
     </div>
   </nav>
 
-  <div class="container mt-3">
+  <div class="container mt-3" id="chat-messages">
     {% for msg in messages %}
       {% if msg.sender.username == sender %}
 
@@ -51,5 +51,17 @@
     </div>
   </form>
 
+  <script>
+    function loadMessages() {
+      fetch("{{ url_for('main.chat_data', recipient_username=recipient) }}")
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById("chat-messages").innerHTML = html;
+        });
+    }
+  
+    setInterval(loadMessages, 3000);  // Alle 3 Sekunden
+  </script>
+  
 </body>
 </html>
