@@ -26,7 +26,6 @@ def chat_list():
 
     current_user = User.query.filter_by(username=session["username"]).first()
 
-    # Alle eindeutigen Kontakte aus gesendeten und empfangenen Nachrichten
     sent_ids = db.session.query(Message.recipient_id).filter_by(sender_id=current_user.id).distinct()
     received_ids = db.session.query(Message.sender_id).filter_by(recipient_id=current_user.id).distinct()
 
