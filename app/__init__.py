@@ -10,7 +10,7 @@ mail = Mail()
 
 def create_app():
     basedir = os.path.abspath(os.path.dirname(__file__))
-    db_path = os.path.join(basedir, "..", "instance", "db.db")
+    db_path = os.environ.get("DATABASE_URL") or os.path.join("/tmp", "db.db")
 
     app = Flask(__name__, template_folder="templates")
     app.secret_key = 'abcd'
