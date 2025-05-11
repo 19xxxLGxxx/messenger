@@ -4,9 +4,15 @@
   <meta charset="utf-8">
   <title>Deine Chats</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-  <button class="btn btn-outline-warning btn-sm" onclick="history.back()">Zurück</button>
+  <div class="d-flex align-items-center gap-2 p-2">
+    <a href="{{ url_for('main.logout') }}" class="btn btn-outline-secondary btn-sm" title="Logout">
+      <i class="bi bi-door-closed"></i>
+    </a>
+    <button class="btn btn-outline-warning btn-sm" onclick="history.back()">Zurück</button>
+  </div>  
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Willkommen, {{ username }}</a>
