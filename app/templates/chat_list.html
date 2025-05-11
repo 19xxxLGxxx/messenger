@@ -6,6 +6,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+  <button class="btn btn-outline-warning btn-sm" onclick="history.back()">Zurück</button>
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Willkommen, {{ username }}</a>
@@ -15,7 +16,7 @@
   <form class="mt-3 bg-light p-3" action="{{ url_for('main.start_chat') }}" method="POST">
     <div class="input-group">
       <input type="text" name="recipient" placeholder="Name des Chatpartners" required>
-      <button class="btn btn-primary" type="submit">Chat starten</button>
+      <button class="btn btn-warning" type="submit">Chat starten</button>
     </div>
   </form>
 
@@ -27,11 +28,11 @@
 
     <div class="d-flex flex-column gap-3 mt-4">
       {% for user in contacts %}
-        <a href="{{ url_for('main.chat', recipient_username=user.username) }}" class="btn btn-primary m-2 text-start" style="width: fit-content;">
+        <a href="{{ url_for('main.chat', recipient_username=user.username) }}" class="btn btn-warning m-2 text-start" style="width: fit-content;">
           {{ user.username }}
         </a>
       {% else %}
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-warning" role="alert">
           Noch keine Chats vorhanden.
         </div>
       {% endfor %}

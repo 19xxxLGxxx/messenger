@@ -14,6 +14,7 @@
   </style>
 </head>
 <body>
+  <button class="btn btn-outline-warning btn-sm" onclick="history.back()">Zurück</button>
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Chat mit {{ recipient }}</a>
@@ -47,7 +48,7 @@
   <form method="POST" class="fixed-bottom bg-light p-3">
     <div class="input-group">
       <input type="text" name="content" class="form-control" placeholder="Nachricht schreiben" required>
-      <button class="btn btn-primary" type="submit">Senden</button>
+      <button class="btn btn-warning" type="submit">Senden</button>
     </div>
   </form>
 
