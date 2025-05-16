@@ -1,22 +1,28 @@
-# Python-Basis-Image verwenden
+# Basis-Image
 FROM python:3.11-slim
 
-# Arbeitsverzeichnis im Container
+# Arbeitsverzeichnis
 WORKDIR /app
 
-# Requirements kopieren und installieren
+# System-Abhängigkeiten für psycopg2
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Abhängigkeiten installieren
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# App-Dateien in Container kopieren
+# Projektdateien kopieren
 COPY . .
 
-# Port für Gunicorn
+# Port freigeben
 EXPOSE 5000
 
-# Environment-Variablen setzen
+# Umgebungsvariablen
 ENV FLASK_APP=run.py
 ENV FLASK_ENV=production
 
-# Startbefehl für die App
+# Startbefehl
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "run:app"]

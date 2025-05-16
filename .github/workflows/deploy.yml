@@ -12,7 +12,10 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Set up Python (für Tests)
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
@@ -27,5 +30,8 @@ jobs:
       run: |
         pytest
 
-    - name: Deploy to Render
-      run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+    - name: Trigger Deploy on Render
+      env:
+        DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      run: |
+        curl -X POST "$DEPLOY_HOOK"

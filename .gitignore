@@ -6,6 +6,7 @@ __pycache__/
 
 # Virtuelle Umgebung
 .venv/
+.env
 
 # Editor-/System-Dateien
 .DS_Store

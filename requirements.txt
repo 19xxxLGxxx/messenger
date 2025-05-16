@@ -15,6 +15,7 @@ packaging==25.0
 pluggy==1.5.0
 psycopg2-binary
 pytest==8.3.5
+python-dotenv
 SQLAlchemy==2.0.40
 tomli==2.2.1
 typing_extensions==4.13.2
