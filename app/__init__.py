@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from dotenv import load_dotenv
 import os
+import sys
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -15,10 +16,13 @@ def create_app():
     app.secret_key = 'abcd'
 
     database_url = os.environ.get("DATABASE_URL")
-    if database_url and database_url.startswith("postgres://"):
+    if not database_url:
+        print("❌ DATABASE_URL wurde nicht gesetzt. Bitte in der .env oder Render-Umgebung angeben.")
+        sys.exit(1)
+
+    if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
-    elif not database_url:
-        database_url = f"sqlite:///{os.path.join('/tmp', 'db.db')}"
+
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
