@@ -8,9 +8,12 @@ from .models import User, Message
 bp = Blueprint("main", __name__)
 s = URLSafeTimedSerializer("abcd")
 
+
 @bp.route("/")
 def index():
-    return render_template("start.html")
+    from_logout = request.args.get("fromLogout") == "true"
+    return render_template("start.html", fromLogout=from_logout)
+    
 
 @bp.route("/register", methods=["GET", "POST"])
 def register():
@@ -85,7 +88,7 @@ def login():
 def logout():
     logout_user()
     session.clear()
-    return redirect(url_for("main.login"))
+    return redirect(url_for("main.index", fromLogout="true"))
 
 @bp.route("/chats")
 @login_required

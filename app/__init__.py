@@ -11,36 +11,32 @@ login_manager = LoginManager()
 mail = Mail()
 load_dotenv()
 
-def create_app():
+
+def create_app(test_config=None):
     app = Flask(__name__, template_folder="templates")
     app.secret_key = 'abcd'
 
-    database_url = os.environ.get("DATABASE_URL")
-    if not database_url:
-        print("❌ DATABASE_URL wurde nicht gesetzt. Bitte in der .env oder Render-Umgebung angeben.")
-        sys.exit(1)
+    if test_config:
+        app.config.update(test_config)
+    else:
+        database_url = os.environ.get("DATABASE_URL")
+        if not database_url:
+            print("DATABASE_URL fehlt.", file=sys.stderr)
+            sys.exit(1)
 
-    if database_url.startswith("postgres://"):
-        database_url = database_url.replace("postgres://", "postgresql://", 1)
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
-    app.config['MAIL_PORT'] = 2525
-    app.config['MAIL_DEFAULT_SENDER'] = 'laramariegeyer@gmail.com'
-    app.config['MAIL_USERNAME'] = '8afe4e49962d19'
-    app.config['MAIL_PASSWORD'] = '6198c872f723aa'
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USE_SSL'] = False
-
-    # app.config['MAIL_SERVER'] = 'live.smtp.mailtrap.io'
-    # app.config['MAIL_DEFAULT_SENDER'] = 'hello@lara-geyer.de'
-    # app.config['MAIL_PORT'] = 587
-    # app.config['MAIL_USERNAME'] = 'api'
-    # app.config['MAIL_PASSWORD'] = '...'
-    # app.config['MAIL_USE_TLS'] = True
-    # app.config['MAIL_USE_SSL'] = False
+        app.config['MAIL_SERVER'] = 'live.smtp.mailtrap.io'
+        app.config['MAIL_DEFAULT_SENDER'] = 'hello@lara-geyer.de'
+        app.config['MAIL_PORT'] = 587
+        app.config['MAIL_USERNAME'] = 'api'
+        app.config['MAIL_PASSWORD'] = 'd5bd2752336246fc91e61c75020eb010'
+        app.config['MAIL_USE_TLS'] = True
+        app.config['MAIL_USE_SSL'] = False
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -57,8 +53,9 @@ def create_app():
     from .routes import bp as main_bp
     app.register_blueprint(main_bp)
 
-    with app.app_context():
-        from .models import User, Message
-        db.create_all()
+    if not test_config:
+        with app.app_context():
+            from .models import User, Message
+            db.create_all()
 
     return app
